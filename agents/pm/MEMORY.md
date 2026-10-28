@@ -8,13 +8,6 @@
 
 ## Session memory
 
-- [2026-10-25 07:17] pm · context: For UI/UX tasks where the content is derived from shared documentation, explicitly confirm the data source (hardcoded vs. API mock) to prevent scope creep. (`8486d0325d01`)
-- [2026-10-25 07:27] pm · context: Released slice: build a page for our agent office with all of our profile (`8486d0325d01`)
-- [2026-10-25 07:27] pm · context: Released slice: drain test (`drainrelease01`)
-- [2026-10-25 13:23] pm · context: When the brief is 'Hello World', always confirm single-file vs. multi-file structure and styling requirements to prevent scope creep. (`b06516236b5b`)
-- [2026-10-25 13:24] pm · context: For simple 'Hello World' pages, confirm single-file vs. multi-file structure and styling requirements to prevent scope creep. (b06516236b5b) (`b06516236b5b`)
-- [2026-10-25 13:28] pm · context: When QA provides a final report, the PM must confirm AC coverage against the report evidence before signaling release readiness. (`b06516236b5b`)
-- [2026-10-25 13:28] pm · context: Released slice: build a simple hello world website (`b06516236b5b`)
 - [2026-10-25 13:29] pm · context: Released slice: sign test (`release_sign_test`)
 - [2026-10-25 13:29] pm · context: Released slice: flow (`release_sign_flow`)
 - [2026-10-25 13:29] pm · context: Released slice: two (`release_two_click`)
@@ -38,3 +31,10 @@
 - [2026-10-27 15:01] pm · context: When scoping UI/UX tasks based on vague briefs, explicitly confirm content source (hardcoded vs. API mock) and required sections/layout to prevent scope creep. (b956a623435a) (`1227fe2d7465`)
 - [2026-10-27 15:20] pm · context: When QA provides a final report, the PM must confirm AC coverage against the report evidence before signaling release readiness. (`1227fe2d7465`)
 - [2026-10-27 15:30] pm · context: Released slice: build a simple website about my office (`1227fe2d7465`)
+- [2026-10-28 13:19] pm · context: When the input is 'build a simple website', always ask about purpose, page count, styling level, and data source to prevent scope creep. (`1b994b32c1a5`)
+- [2026-10-28 13:20] pm · context: When scoping UI/UX tasks based on vague briefs, explicitly confirm content source (hardcoded vs. API mock) and required sections/layout to prevent scope creep. (b956a623435a) (`1b994b32c1a5`)
+- [2026-10-28 13:26] pm · mistake: Plan was rejected: Fix AC3 (`smoke0000001`)
+- [2026-10-28 13:28] pm · context: Released slice: one-click release (`release_one_click01`)
+- [2026-10-28 13:28] pm · mistake: Release rejected by supervisor: Fix the button (`rel000000001`)
+- [2026-10-28 13:28] pm · mistake: Release rejected by supervisor: send to pm (`drainrelease01`)
+- [2026-10-28 13:52] pm · context: Released slice: build a simple website (`1b994b32c1a5`)

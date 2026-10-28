@@ -11,12 +11,6 @@
 
 ## Session memory
 
-- [2026-10-25 02:53] developer · context: Supervisor rejected release (PM triaging): fix bugs (`t`)
-- [2026-10-25 02:54] developer · context: Supervisor rejected release (PM triaging): Fix the button (`rel000000001`)
-- [2026-10-25 03:06] developer · mistake: QA sent this back: - [high] Automated test execution blocked by Node.js environment constraints: Test files tests/unit/test_render_logic.js and tests/component/test_dom_rendering.js use describe from node:test which is not available in Node v24+ without explicit import. This blo… (`8486d0325d01`)
-- [2026-10-25 03:48] developer · context: Supervisor rejected release (PM triaging): check why failed run (`8486d0325d01`)
-- [2026-10-25 04:00] developer · mistake: QA sent this back: - [high] Validation failed: node tests/contract/test_acceptance_criteria.js: ✗ AC2 failed: document is not defined - [high] Validation failed: node tests/unit/test_render_logic.js: ✗ XSS escaping test failed: document is not defined - [high] Validation gap: fa… (`8486d0325d01`)
-- [2026-10-25 04:01] developer · context: Supervisor rejected release (PM triaging): node test failed fix it (`8486d0325d01`)
 - [2026-10-25 04:03] developer · context: Supervisor rejected release (PM triaging): PM must fix AC (`releasegate98`)
 - [2026-10-25 04:04] developer · context: Supervisor rejected release (PM triaging): Fix the button (`rel000000001`)
 - [2026-10-25 04:06] developer · context: Supervisor rejected release (PM triaging): nope (`releasegate98`)
@@ -41,3 +35,9 @@
 - [2026-10-25 14:51] developer · context: For Node v24+ environments, always use native 'assert' module instead of importing from 'node:test' to avoid export errors. Mock DOM elements must implement addEventListener directly on the element instance. (`b956a623435a`)
 - [2026-10-25 14:53] developer · mistake: QA sent this back: - [high] Component Test Suite Blocked by Mock DOM Implementation Error: `tests/component/test_dom_rendering.js` crashes with `TypeError: aboutLink.addEventListener is not a function`. The mock element created via `createElement` does not expose the `addEventLi… (`b956a623435a`)
 - [2026-10-27 15:12] developer · mistake: QA sent this back: - [high] Validation gap: manual_only: Acceptance criteria were checked manually but no automated validation ran. PM should add testable AC or require Developer-owned automated tests. (`1227fe2d7465`)
+- [2026-10-28 12:49] developer · mistake: qa sent work back because scope was wrong: The implementation (CLI) does not match the plan (HTTP backend). The acceptance criteria explicitly require HTTP endpoints and status codes. Developer must either implement an HTTP server or update the plan to accept a CLI tool. (`15e5ca7f1670`)
+- [2026-10-28 13:26] developer · mistake: QA sent this back: - [high] Automated Validation Blocked by Node Runtime Constraints: Test suite `test_dom_rendering.js` fails with 'document is not defined' because the prototype uses browser-specific DOM APIs (document.createElement, etc.) which are unavailable in Node v24+ wi… (`1b994b32c1a5`)
+- [2026-10-28 13:27] developer · context: For Node v24+ environments, always use native 'assert' module directly and avoid importing from 'node:test'. Mock DOM elements must implement addEventListener directly on the element instance to prevent TypeError. (`1b994b32c1a5`)
+- [2026-10-28 13:28] developer · context: Supervisor rejected release (PM triaging): Fix the button (`rel000000001`)
+- [2026-10-28 13:28] developer · context: Supervisor rejected release (PM triaging): send to pm (`drainrelease01`)
+- [2026-10-28 13:28] developer · mistake: QA sent this back: - [high] Automated Validation Blocked by Node Runtime Constraints: Test suite `tests/unit/test_scroll_logic.js` and `tests/component/test_dom_rendering.js` fail with 'document is not defined' because the prototype uses browser-specific DOM APIs (document.creat… (`1b994b32c1a5`)

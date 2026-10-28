@@ -15,9 +15,12 @@ default:
 agents:
   pm:
     provider: ollama
-    model: gemma4:latest
+    model: gemma4:26b-mlx
     temperature: 0.15
   architect: {}
   designer: {}
-  developer: {}
+  developer:
+    provider: ollama
+    model: qwen3.5:27b-mlx
+    temperature: 0.15
   qa: {}

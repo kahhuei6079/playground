@@ -15,7 +15,7 @@ _THINK = re.compile(r"<think>.*?</think>", re.DOTALL | re.IGNORECASE)
 _FENCE = re.compile(r"```(?:json)?\s*(.*?)```", re.DOTALL | re.IGNORECASE)
 
 
-def get_model(agent: str) -> BaseChatModel:
+def get_model(agent: str, response_schema: dict[str, Any] | None = None) -> BaseChatModel:
     profile = profile_for_agent(agent)
     temperature = profile.temperature
     if profile.provider == "ollama":
@@ -25,6 +25,8 @@ def get_model(agent: str) -> BaseChatModel:
             "temperature": temperature,
             "num_predict": OLLAMA_NUM_PREDICT,
         }
+        if response_schema is not None:
+            kwargs["format"] = response_schema
         try:
             return ChatOllama(**kwargs, reasoning=False)
         except TypeError:
@@ -88,7 +90,7 @@ def _chunk_text(content: Any) -> str:
 
 
 def invoke_json(agent: str, system: str, user: str, schema: type[BaseModel]) -> dict[str, Any]:
-    model = get_model(agent)
+    model = get_model(agent, response_schema=schema.model_json_schema())
     label = model_label(agent)
     emit({"type": "model_selected", "agent": agent, "model": label})
     prompt = (

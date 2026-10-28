@@ -45,7 +45,7 @@ Users should see a list of 3–4 lunch options (you pick sensible defaults), vot
 Deliver as a self-contained slice in the workspace: HTML/CSS/JS (no framework required). Persist votes in localStorage so refresh keeps counts. Add a short README with how to open the page and run automated tests.
 
 Acceptance must be testable: voting updates counts, one vote per session, winner/tie/empty behaviors, and tests cover unit logic plus at least one UI/component check. | awaiting_brief | pm | 2026-10-24 15:18 UTC |
-| `15e5ca7f1670` | build a php app with input and output for the name and say hello xxx from the input | implementing | developer | 2026-10-24 15:35 UTC |
+| `15e5ca7f1670` | build a php app with input and output for the name and say hello xxx from the input | implementing | pm | 2026-10-28 12:51 UTC |
 | `960b759c82d2` | A Python script that reads a CSV path from argv, prints row count and column names, and exits 1 with a clear error if the file is missing. | blocked | human | 2026-10-24 15:46 UTC |
 | `8b041c2c0cf2` | build hello world java cli | released | human | 2026-10-24 15:56 UTC |
 | `c1a81a1794bb` | build a simple website with PM profile | released | human | 2026-10-24 16:45 UTC |
@@ -55,12 +55,20 @@ Acceptance must be testable: voting updates counts, one vote per session, winner
 | `releasegate98` | test | blocked | human | 2026-10-25 04:06 UTC |
 | `releasetest1` | release sendback test | testing | qa | 2026-10-25 04:21 UTC |
 | `livegate01` | live gate test | implementing | pm | 2026-10-25 04:47 UTC |
-| `drainrelease01` | drain test | released | human | 2026-10-25 07:27 UTC |
+| `drainrelease01` | drain test | awaiting_release | human | 2026-10-28 13:28 UTC |
 | `b06516236b5b` | build a simple hello world website | released | human | 2026-10-25 13:28 UTC |
 | `release_sign_test` | sign test | released | human | 2026-10-25 13:29 UTC |
 | `release_sign_flow` | flow | released | human | 2026-10-25 13:29 UTC |
 | `release_two_click` | two | released | human | 2026-10-25 13:29 UTC |
-| `release_one_click01` | one-click release | released | human | 2026-10-25 14:55 UTC |
+| `release_one_click01` | one-click release | released | human | 2026-10-28 13:28 UTC |
 | `5e49b15c3f58` | test | released | human | 2026-10-25 13:53 UTC |
 | `b956a623435a` | build a simple website for profolio | released | human | 2026-10-25 14:54 UTC |
 | `1227fe2d7465` | build a simple website about my office | released | human | 2026-10-27 15:30 UTC |
+| `c7906d3c0b79` | build a simple website with my office profile | planning | pm | 2026-10-28 12:52 UTC |
+| `6937aa656290` | build a website with my team profile | planning | pm | 2026-10-28 12:53 UTC |
+| `a82c5cc5e4b0` | build a website | planning | pm | 2026-10-28 13:04 UTC |
+| `a4833d5c4100` | build a simple website with our team profile | planning | pm | 2026-10-28 13:13 UTC |
+| `ff92b7375dee` | build a simple website with team profile | planning | pm | 2026-10-28 13:14 UTC |
+| `98d3cb34bbfe` | build a simple website | planning | pm | 2026-10-28 13:17 UTC |
+| `1b994b32c1a5` | build a simple website | released | human | 2026-10-28 13:52 UTC |
+| `16c67eb9659b` | build a portfolio website for our team | implementing | developer | 2026-10-28 13:56 UTC |
