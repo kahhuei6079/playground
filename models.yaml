@@ -21,6 +21,6 @@ agents:
   designer: {}
   developer:
     provider: ollama
-    model: qwen3.5:27b-mlx
+    model: qwen3.8:27b-mlx
     temperature: 0.15
   qa: {}

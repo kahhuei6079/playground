@@ -22,7 +22,7 @@ from config import (
     MAX_SCOPE_DIALOGUE_TURNS,
     MAX_SCOPE_ESCALATIONS,
 )
-from events import agent_var, emit, thread_id_var
+from events import RunCancelled, agent_var, emit, thread_id_var
 from memory import record_lesson, update_task_board
 from qa_runner import enrich_qa_report
 from scope_policy import designer_escalation_is_no_ui_mismatch, minimal_design_spec, needs_designer_track
@@ -149,6 +149,31 @@ def _pm_return_after_qa(state: OfficeState) -> str:
     if any(k in feedback for k in ("test", "validation", "pytest", "qa cannot", "not runnable")):
         return "developer"
     return "qa"
+
+
+def _qa_retry_feedback(report: dict[str, Any]) -> str:
+    lines: list[str] = []
+    failed_runs = [run for run in report.get("validation_runs") or [] if not run.get("passed")]
+    if failed_runs:
+        lines.append(
+            "Authoritative validation output (fix each reported failure; do not attribute assertion "
+            "failures to the runtime unless the output proves a runtime limitation):"
+        )
+        for run in failed_runs:
+            output = (run.get("stderr") or run.get("stdout") or "Command exited without output.").strip()
+            lines.append(
+                f"- `{run.get('command', 'validation command')}` (exit {run.get('exit_code', 'unknown')}):\n"
+                f"```\n{output[:2400]}\n```"
+            )
+
+    findings = report.get("findings") or []
+    if findings:
+        lines.append("Other QA findings to address:")
+        lines.extend(
+            f"- [{item.get('severity')}] {item.get('title')}: {item.get('detail')}"
+            for item in findings
+        )
+    return "\n".join(lines) or report.get("summary", "QA found issues.")
 
 
 def _escalation_update(state: OfficeState, from_agent: str, esc: dict[str, str]) -> dict[str, Any]:
@@ -780,10 +805,7 @@ def qa_node(state: OfficeState) -> dict:
     retry_count = int(state.get("retry_count") or 0)
     if not passed:
         retry_count += 1
-        findings = report.get("findings") or []
-        feedback = "\n".join(
-            f"- [{item.get('severity')}] {item.get('title')}: {item.get('detail')}" for item in findings
-        ) or report.get("summary", "QA found issues.")
+        feedback = _qa_retry_feedback(report)
         assessment = report.get("validation_assessment") or {}
         pm_triage = (
             retry_count >= MAX_QA_RETRIES
@@ -1100,6 +1122,8 @@ def wrap_agent(name: str, fn):
                 emit({"type": "handoff", **handoff})
             emit({"type": "agent_finished", "agent": name, "status": result.get("status")})
             return result
+        except RunCancelled:
+            raise
         except Exception as exc:  # noqa: BLE001
             emit({"type": "error", "agent": name, "message": str(exc)})
             raise

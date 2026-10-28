@@ -394,10 +394,11 @@ function applyOfficeBranding(office) {
 }
 
 function setLive(text, streaming) {
+  const wasAtBottom = els.live.scrollHeight - els.live.clientHeight - els.live.scrollTop <= 24;
   const value = text || "";
   els.live.textContent = value || "Model output streams here while someone is at their desk.";
   els.live.classList.toggle("empty", !value);
-  if (streaming) els.live.scrollTop = els.live.scrollHeight;
+  if (streaming && wasAtBottom) els.live.scrollTop = els.live.scrollHeight;
 }
 
 function esc(value) {
@@ -1474,6 +1475,9 @@ function handleEvent(event) {
   if (event.type === "token" && event.text) {
     const current = els.live.classList.contains("empty") ? "" : els.live.textContent;
     setLive(current + event.text, true);
+  }
+  if (event.type === "token_reset") {
+    setLive("", false);
   }
   if (event.type === "handoff") {
     const from = event.from;

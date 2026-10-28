@@ -9,11 +9,30 @@ thread_id_var: ContextVar[str] = ContextVar("thread_id", default="")
 agent_var: ContextVar[str] = ContextVar("agent", default="")
 
 
+class RunCancelled(Exception):
+    """Raised when a supervisor stops a run during model generation."""
+
+
 class EventHub:
     def __init__(self) -> None:
         self._lock = threading.Lock()
         self._subs: dict[str, list[Queue]] = {}
         self.live: dict[str, dict[str, Any]] = {}
+        self._stop_requests: set[str] = set()
+
+    def request_stop(self, thread_id: str) -> None:
+        with self._lock:
+            self._stop_requests.add(thread_id)
+
+    def clear_stop_request(self, thread_id: str) -> None:
+        with self._lock:
+            self._stop_requests.discard(thread_id)
+
+    def stop_requested(self, thread_id: str) -> bool:
+        if not thread_id:
+            return False
+        with self._lock:
+            return thread_id in self._stop_requests
 
     def subscribe(self, thread_id: str = "*") -> Queue:
         queue: Queue = Queue()
@@ -73,6 +92,8 @@ class EventHub:
                     current["active_model_agent"] = agent
             elif kind == "token":
                 current["live_output"] = (current.get("live_output") or "") + str(payload.get("text") or "")
+            elif kind == "token_reset":
+                current["live_output"] = ""
             elif kind == "agent_finished":
                 agent = payload.get("agent")
                 if agent:

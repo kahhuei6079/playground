@@ -5,14 +5,13 @@ from typing import Any
 
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_ollama import ChatOllama
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from config import JSON_PARSE_ATTEMPTS, OLLAMA_NUM_PREDICT
-from events import emit
+from events import RunCancelled, emit, hub, thread_id_var
 from model_config import profile_for_agent
 
 _THINK = re.compile(r"<think>.*?</think>", re.DOTALL | re.IGNORECASE)
-_FENCE = re.compile(r"```(?:json)?\s*(.*?)```", re.DOTALL | re.IGNORECASE)
 
 
 def get_model(agent: str, response_schema: dict[str, Any] | None = None) -> BaseChatModel:
@@ -64,13 +63,14 @@ def model_label(agent: str) -> str:
 
 def extract_json(text: str) -> Any:
     cleaned = _THINK.sub("", text).strip()
-    fenced = _FENCE.findall(cleaned)
-    candidate = fenced[-1].strip() if fenced else cleaned
-    start = candidate.find("{")
-    end = candidate.rfind("}")
-    if start == -1 or end == -1 or end <= start:
+    start = cleaned.find("{")
+    if start == -1:
         raise ValueError(f"Model did not return JSON:\n{text[:800]}")
-    return json.loads(candidate[start : end + 1])
+    try:
+        value, _ = json.JSONDecoder().raw_decode(cleaned[start:])
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Model did not return valid JSON:\n{text[:800]}") from exc
+    return value
 
 
 def _chunk_text(content: Any) -> str:
@@ -119,16 +119,20 @@ def invoke_json(agent: str, system: str, user: str, schema: type[BaseModel]) -> 
             {"role": "user", "content": prompt + retry_hint},
         ]
         parts: list[str] = []
-        emit({"type": "token", "text": ""})
+        emit({"type": "token_reset"})
+        thread_id = thread_id_var.get()
+        if hub.stop_requested(thread_id):
+            raise RunCancelled("Run stopped by supervisor.")
         for chunk in model.stream(messages):
+            if hub.stop_requested(thread_id):
+                raise RunCancelled("Run stopped by supervisor.")
             text = _chunk_text(getattr(chunk, "content", ""))
             if text:
                 parts.append(text)
                 emit({"type": "token", "text": text})
-        content = "".join(parts)
-        try:
-            data = extract_json(content)
-            return schema.model_validate(data).model_dump()
-        except Exception as exc:  # noqa: BLE001
-            last_error = exc
+                try:
+                    data = extract_json("".join(parts))
+                    return schema.model_validate(data).model_dump()
+                except (ValueError, ValidationError) as exc:
+                    last_error = exc
     raise RuntimeError(f"Could not parse model JSON from {label}: {last_error}")

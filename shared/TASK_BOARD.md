@@ -55,7 +55,7 @@ Acceptance must be testable: voting updates counts, one vote per session, winner
 | `releasegate98` | test | blocked | human | 2026-10-25 04:06 UTC |
 | `releasetest1` | release sendback test | testing | qa | 2026-10-25 04:21 UTC |
 | `livegate01` | live gate test | implementing | pm | 2026-10-25 04:47 UTC |
-| `drainrelease01` | drain test | awaiting_release | human | 2026-10-28 13:28 UTC |
+| `drainrelease01` | drain test | awaiting_release | human | 2026-10-28 14:45 UTC |
 | `b06516236b5b` | build a simple hello world website | released | human | 2026-10-25 13:28 UTC |
 | `release_sign_test` | sign test | released | human | 2026-10-25 13:29 UTC |
 | `release_sign_flow` | flow | released | human | 2026-10-25 13:29 UTC |
@@ -71,4 +71,4 @@ Acceptance must be testable: voting updates counts, one vote per session, winner
 | `ff92b7375dee` | build a simple website with team profile | planning | pm | 2026-10-28 13:14 UTC |
 | `98d3cb34bbfe` | build a simple website | planning | pm | 2026-10-28 13:17 UTC |
 | `1b994b32c1a5` | build a simple website | released | human | 2026-10-28 13:52 UTC |
-| `16c67eb9659b` | build a portfolio website for our team | implementing | developer | 2026-10-28 13:56 UTC |
+| `16c67eb9659b` | build a portfolio website for our team | released | human | 2026-10-28 15:28 UTC |

@@ -15,8 +15,6 @@ _MAX_GRAPH_DRAIN_STEPS = 48
 _RELEASE_CHAIN_KEY = "__release_chain__"
 _active: set[str] = set()
 _active_lock = threading.Lock()
-_cancelled: set[str] = set()
-_cancel_lock = threading.Lock()
 
 
 def _interrupt_payload(result: dict) -> dict | None:
@@ -114,13 +112,11 @@ def _stream_until_pause(
 
 
 def _cancel_requested(thread_id: str) -> bool:
-    with _cancel_lock:
-        return thread_id in _cancelled
+    return hub.stop_requested(thread_id)
 
 
 def _clear_cancel(thread_id: str) -> None:
-    with _cancel_lock:
-        _cancelled.discard(thread_id)
+    hub.clear_stop_request(thread_id)
 
 
 def _mark_force_stopped(graph, config: dict, thread_id: str) -> None:
@@ -409,7 +405,6 @@ def force_stop(thread_id: str | None = None, *, all_runs: bool = False) -> dict[
             targets = [thread_id]
         else:
             targets = []
-    with _cancel_lock:
-        for tid in targets:
-            _cancelled.add(tid)
+    for tid in targets:
+        hub.request_stop(tid)
     return {"requested": targets, "active": list_active_runs()}

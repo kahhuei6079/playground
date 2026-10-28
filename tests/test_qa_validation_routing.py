@@ -1,6 +1,6 @@
 """QA validation assessment and PM return routing."""
 
-from graph import _pm_return_after_qa, after_pm_ac_verify, after_qa
+from graph import _pm_return_after_qa, _qa_retry_feedback, after_pm_ac_verify, after_qa
 from qa_runner import assess_validation_coverage
 
 
@@ -48,3 +48,26 @@ def test_after_qa_pm_triage_before_human():
 def test_after_pm_ac_verify_can_return_qa():
     state = {"ac_verified": False, "ac_verification": {"return_to": "qa"}}
     assert after_pm_ac_verify(state) == "qa"
+
+
+def test_qa_retry_feedback_prioritizes_actual_validation_output():
+    feedback = _qa_retry_feedback(
+        {
+            "validation_runs": [
+                {
+                    "command": "node tests/unit/test_scroll_logic.js",
+                    "exit_code": 1,
+                    "passed": False,
+                    "stderr": "AssertionError: expected null, got scroll options",
+                }
+            ],
+            "findings": [
+                {
+                    "severity": "high",
+                    "title": "Node DOM limitation",
+                    "detail": "The environment may not support browser APIs.",
+                }
+            ],
+        }
+    )
+    assert feedback.index("AssertionError: expected null") < feedback.index("Node DOM limitation")

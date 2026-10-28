@@ -11,13 +11,6 @@
 
 ## Session memory
 
-- [2026-10-25 04:03] developer · context: Supervisor rejected release (PM triaging): PM must fix AC (`releasegate98`)
-- [2026-10-25 04:04] developer · context: Supervisor rejected release (PM triaging): Fix the button (`rel000000001`)
-- [2026-10-25 04:06] developer · context: Supervisor rejected release (PM triaging): nope (`releasegate98`)
-- [2026-10-25 04:12] developer · context: For Node v24+ environments, avoid importing 'expect' from 'node:test'; use native 'assert' module to prevent export errors. Existing tests using 'describe' without import will fail. (`8486d0325d01`)
-- [2026-10-25 04:15] developer · mistake: QA sent this back: - [high] Automated Test Execution Blocked by Node.js Environment Constraints: Test files `tests/unit/test_render_logic.js` and `tests/contract/test_acceptance_criteria.js` use DOM APIs (`document.createElement`) which are not available in the Node runtime with… (`8486d0325d01`)
-- [2026-10-25 04:18] developer · context: Supervisor rejected release (PM triaging): check why node test fail (`8486d0325d01`)
-- [2026-10-25 04:21] developer · context: Supervisor rejected release (PM triaging): PM please fix AC wording (`releasetest1`)
 - [2026-10-25 04:21] developer · context: Supervisor rejected release (PM triaging): PM fix AC (`livegate01`)
 - [2026-10-25 04:25] developer · context: Supervisor rejected release (PM triaging): send to pm (`drainrelease01`)
 - [2026-10-25 04:25] developer · context: Supervisor rejected release (PM triaging): Fix the button (`rel000000001`)
@@ -41,3 +34,10 @@
 - [2026-10-28 13:28] developer · context: Supervisor rejected release (PM triaging): Fix the button (`rel000000001`)
 - [2026-10-28 13:28] developer · context: Supervisor rejected release (PM triaging): send to pm (`drainrelease01`)
 - [2026-10-28 13:28] developer · mistake: QA sent this back: - [high] Automated Validation Blocked by Node Runtime Constraints: Test suite `tests/unit/test_scroll_logic.js` and `tests/component/test_dom_rendering.js` fail with 'document is not defined' because the prototype uses browser-specific DOM APIs (document.creat… (`1b994b32c1a5`)
+- [2026-10-28 14:54] developer · context: For Node v24+ environments, always use native 'assert' module directly and avoid importing from 'node:test'. Mock DOM elements must implement addEventListener directly on the element instance to prevent TypeError. (`16c67eb9659b`)
+- [2026-10-28 14:54] developer · context: When testing HTML structure in Node, parse the file as a string and use regex/includes checks rather than DOM APIs to avoid 'document is not defined' errors. (`16c67eb9659b`)
+- [2026-10-28 15:09] developer · mistake: QA sent this back: Authoritative validation output (fix each reported failure; do not attribute assertion failures to the runtime unless the output proves a runtime limitation): - `node tests/component/test_dom_rendering.js` (exit 1): ``` node:assert:400 throw err; ^ AssertionEr… (`16c67eb9659b`)
+- [2026-10-28 15:13] developer · context: When testing HTML content in Node, check for HTML entities (e.g., &copy;) not their rendered Unicode equivalents (e.g., ©) since the source file contains the entity encoding. (`16c67eb9659b`)
+- [2026-10-28 15:14] developer · mistake: QA sent this back: Other QA findings to address: - [high] Automated Validation Failed: Footer Text Assertion: `tests/component/test_dom_rendering.js` fails because it checks for the literal string '&copy; 2026 Office Prototype', but `index.html` contains the HTML entity '&copy;'… (`16c67eb9659b`)
+- [2026-10-28 15:15] developer · context: Supervisor rejected release (PM triaging): Automated Validation Failed: Footer Text Assertion, can have this fix? (`16c67eb9659b`)
+- [2026-10-28 15:25] developer · context: For Node v24+ environments, always use native 'assert' module directly and avoid importing from 'node:test'. Mock DOM elements must implement addEventListener directly on the element instance to prevent TypeError. (`16c67eb9659b`)
