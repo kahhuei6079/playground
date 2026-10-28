@@ -1,0 +1,28 @@
+# Copy ideas into models.yaml. Set API keys in the environment, not in this file.
+
+default:
+  provider: ollama
+  model: qwen3.5:9b
+  base_url: http://localhost:11434
+  temperature: 0.2
+
+agents:
+  pm:
+    provider: ollama
+    model: qwen3.5:9b
+
+  designer:
+    provider: openai
+    model: gpt-4o-mini
+    base_url: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+
+  developer:
+    provider: openai
+    model: claude-sonnet-4-20250514
+    base_url: https://api.anthropic.com/v1/
+    api_key_env: ANTHROPIC_API_KEY
+
+  qa:
+    provider: ollama
+    model: gemma4:12b

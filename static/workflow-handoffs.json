@@ -1,0 +1,264 @@
+{
+  "version": 1,
+  "description": "Parcel walks and meeting animations mirrored from graph.py _handoff emissions and UI gates.",
+  "meetings": [
+    {
+      "id": "gate-brief",
+      "phase": "Discover",
+      "label": "Meeting: brief Q&A",
+      "mode": "",
+      "lines": ["Quick check before I draft the plan.", "Any constraints on scope or delivery?"]
+    },
+    {
+      "id": "gate-plan-ac",
+      "phase": "Plan",
+      "label": "Meeting: AC sign-off",
+      "mode": "ac_signoff",
+      "lines": ["Walk through acceptance criteria.", "Done when: user can complete the happy path."]
+    },
+    {
+      "id": "gate-release",
+      "phase": "Release",
+      "label": "Meeting: release review",
+      "mode": "release",
+      "lines": ["QA passed — all AC met.", "Ready for your release signature."]
+    }
+  ],
+  "parcel": [
+    {
+      "id": "pm-human-brief",
+      "phase": "Discover",
+      "label": "PM → You",
+      "from": "pm",
+      "to": "human",
+      "direction": "forward",
+      "graph": "pm_discover (questions)"
+    },
+    {
+      "id": "human-architect-brief",
+      "phase": "Discover",
+      "label": "You → Architect",
+      "from": "human",
+      "to": "architect",
+      "direction": "forward",
+      "graph": "confirm_brief"
+    },
+    {
+      "id": "architect-pm-scope-open",
+      "phase": "Scope",
+      "label": "Architect → PM",
+      "from": "architect",
+      "to": "pm",
+      "direction": "forward",
+      "graph": "architect (scope huddle)"
+    },
+    {
+      "id": "architect-pm-scope-reply",
+      "phase": "Scope",
+      "label": "Architect → PM (reply)",
+      "from": "architect",
+      "to": "pm",
+      "direction": "forward",
+      "graph": "architect (scope reply)"
+    },
+    {
+      "id": "pm-architect-scope-return",
+      "phase": "Scope",
+      "label": "PM → Architect",
+      "from": "pm",
+      "to": "architect",
+      "direction": "return",
+      "graph": "pm_scope (unresolved)"
+    },
+    {
+      "id": "pm-human-plan",
+      "phase": "Plan",
+      "label": "PM → You",
+      "from": "pm",
+      "to": "human",
+      "direction": "forward",
+      "graph": "pm (plan draft)"
+    },
+    {
+      "id": "human-designer-ac",
+      "phase": "Plan",
+      "label": "You → Designer",
+      "from": "human",
+      "to": "designer",
+      "direction": "forward",
+      "graph": "approve_plan (UI track)"
+    },
+    {
+      "id": "human-developer-ac",
+      "phase": "Plan",
+      "label": "You → Developer",
+      "from": "human",
+      "to": "developer",
+      "direction": "forward",
+      "graph": "approve_plan (no designer)"
+    },
+    {
+      "id": "human-pm-plan-reject",
+      "phase": "Plan",
+      "label": "You → PM (AC changes)",
+      "from": "human",
+      "to": "pm",
+      "direction": "return",
+      "graph": "approve_plan (reject)"
+    },
+    {
+      "id": "pm-designer-skip-gate",
+      "phase": "Plan",
+      "label": "PM → Designer",
+      "from": "pm",
+      "to": "designer",
+      "direction": "forward",
+      "graph": "pm (skip_plan_approval)"
+    },
+    {
+      "id": "pm-developer-skip-gate",
+      "phase": "Plan",
+      "label": "PM → Developer",
+      "from": "pm",
+      "to": "developer",
+      "direction": "forward",
+      "graph": "pm (skip_plan_approval)"
+    },
+    {
+      "id": "pm-qa-skip-gate",
+      "phase": "Plan",
+      "label": "PM → QA",
+      "from": "pm",
+      "to": "qa",
+      "direction": "forward",
+      "graph": "pm (skip_plan_approval)"
+    },
+    {
+      "id": "designer-developer",
+      "phase": "Build",
+      "label": "Designer → Developer",
+      "from": "designer",
+      "to": "developer",
+      "direction": "forward",
+      "graph": "designer"
+    },
+    {
+      "id": "designer-pm-escalation",
+      "phase": "Build",
+      "label": "Designer → PM",
+      "from": "designer",
+      "to": "pm",
+      "direction": "return",
+      "graph": "designer (scope escalation)"
+    },
+    {
+      "id": "developer-qa",
+      "phase": "Build",
+      "label": "Developer → QA",
+      "from": "developer",
+      "to": "qa",
+      "direction": "forward",
+      "graph": "developer"
+    },
+    {
+      "id": "developer-pm-escalation",
+      "phase": "Build",
+      "label": "Developer → PM",
+      "from": "developer",
+      "to": "pm",
+      "direction": "return",
+      "graph": "developer (scope escalation)"
+    },
+    {
+      "id": "developer-designer-escalation",
+      "phase": "Build",
+      "label": "Developer → Designer",
+      "from": "developer",
+      "to": "designer",
+      "direction": "return",
+      "graph": "developer (scope escalation)"
+    },
+    {
+      "id": "qa-developer-fail",
+      "phase": "QA",
+      "label": "QA → Developer",
+      "from": "qa",
+      "to": "developer",
+      "direction": "return",
+      "graph": "qa (failed, retries left)"
+    },
+    {
+      "id": "qa-pm-escalation",
+      "phase": "QA",
+      "label": "QA → PM",
+      "from": "qa",
+      "to": "pm",
+      "direction": "return",
+      "graph": "qa (scope escalation)"
+    },
+    {
+      "id": "qa-designer-escalation",
+      "phase": "QA",
+      "label": "QA → Designer",
+      "from": "qa",
+      "to": "designer",
+      "direction": "return",
+      "graph": "qa (scope escalation)"
+    },
+    {
+      "id": "qa-pm-pass",
+      "phase": "QA",
+      "label": "QA → PM",
+      "from": "qa",
+      "to": "pm",
+      "direction": "forward",
+      "graph": "qa (passed)"
+    },
+    {
+      "id": "pm-human-release-ready",
+      "phase": "Release",
+      "label": "PM → You",
+      "from": "pm",
+      "to": "human",
+      "direction": "forward",
+      "graph": "pm_ac_verify (all AC met)"
+    },
+    {
+      "id": "pm-developer-ac-gap",
+      "phase": "Release",
+      "label": "PM → Developer",
+      "from": "pm",
+      "to": "developer",
+      "direction": "return",
+      "graph": "pm_ac_verify (gaps)"
+    },
+    {
+      "id": "human-pm-release-reject",
+      "phase": "Release",
+      "label": "You → PM",
+      "from": "human",
+      "to": "pm",
+      "direction": "return",
+      "graph": "review (reject)"
+    }
+  ],
+  "playthrough": [
+    "gate-brief",
+    "pm-human-brief",
+    "human-architect-brief",
+    "architect-pm-scope-open",
+    "pm-architect-scope-return",
+    "architect-pm-scope-reply",
+    "pm-human-plan",
+    "gate-plan-ac",
+    "human-designer-ac",
+    "designer-developer",
+    "developer-qa",
+    "qa-developer-fail",
+    "developer-qa",
+    "qa-pm-pass",
+    "pm-human-release-ready",
+    "gate-release",
+    "human-pm-release-reject"
+  ]
+}

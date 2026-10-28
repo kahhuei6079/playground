@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent Office</title>
+  <link rel="stylesheet" href="/static/styles.css?v=20" />
+  <link rel="stylesheet" href="/static/pixel-office.css?v=40" />
+</head>
+<body>
+  <header class="top">
+    <div>
+      <p class="eyebrow">Local office</p>
+      <h1 id="office-name">Agent Office</h1>
+    </div>
+    <div class="meta">
+      <span id="model-label">model</span>
+      <span id="thread-label">no thread</span>
+      <a href="/dev/animation" class="dev-link" title="Watch parcel &amp; meeting animations">Animation tests</a>
+    </div>
+  </header>
+
+  <div class="page-split">
+    <aside class="task-rail panel" aria-label="Task history">
+      <div class="rail-head">
+        <h2>Tasks</h2>
+        <span id="task-count" class="task-count">0</span>
+      </div>
+      <ul id="task-list" class="task-list">
+        <li class="task-empty">No tasks yet.</li>
+      </ul>
+    </aside>
+    <div class="page-main">
+  <form id="task-form" class="composer">
+    <label for="task">New assignment</label>
+    <div class="row">
+      <textarea id="task" rows="2" placeholder="Build a one-page checkout mock with amount and pay button" required></textarea>
+      <button type="submit" id="run-btn">Brief the office</button>
+      <button type="button" id="stop-btn" class="ghost danger" title="Stop all agents on every active task">Force stop</button>
+    </div>
+  </form>
+
+  <section class="model-roster" id="model-roster" aria-label="Model roster">
+    <div class="roster-head">
+      <h2>Model roster</h2>
+      <p class="roster-hint">Models: <code id="models-config-path">models.yaml</code> · Office name: <code id="office-config-path">office.yaml</code> — restart UI after edits.</p>
+    </div>
+    <div class="model-grid" id="model-grid"></div>
+  </section>
+
+  <section class="office" aria-label="Office floor">
+    <div class="office-header">
+      <h2>Virtual office floor</h2>
+      <div class="status-bar inline">
+        <div id="status-text">Supervisor is in the office. The team may be at their desks or the pantry.</div>
+        <div class="pulse-dot" id="pulse-dot" hidden></div>
+      </div>
+    </div>
+    <div class="office-floor-viewport">
+    <div class="office-scene pixel-mode modern-office cozy-pixel wood" id="office-scene" data-ambient="on">
+      <div class="pixel-title office-sign" id="office-sign" hidden>
+        <span class="office-sign-cover" aria-hidden="true"></span>
+        <span class="office-sign-text" id="office-sign-text"></span>
+      </div>
+      <div class="pixel-memory" id="pixel-memory">MEMORY · idle</div>
+      <div class="pixel-action" id="pixel-action">STANDBY</div>
+      <div class="pixel-floor" id="pixel-floor"></div>
+      <div class="pixel-props">
+        <div class="prop terminal" id="prop-terminal">Build station</div>
+      </div>
+    </div>
+    </div>
+    <p class="office-caption" id="office-caption">The team is around the office. Send a brief when you're ready.</p>
+  </section>
+
+  <main class="layout">
+    <section class="panel discuss" id="discussion">
+      <p class="eyebrow" id="gate-label">Plan</p>
+      <h2 id="gate-prompt">What the PM proposes</h2>
+      <p id="discuss-status">No plan yet. Brief the office — the PM will ask a few questions, then bring a plan to the meeting.</p>
+      <div id="plan-brief" class="plan-brief empty">Waiting for the PM.</div>
+      <div id="approval" hidden>
+        <textarea id="feedback" rows="2" placeholder="Say what to change. Required if you reject."></textarea>
+        <div class="row">
+          <button type="button" id="approve-btn">Agree</button>
+          <button type="button" class="ghost" id="reject-btn">Send back</button>
+        </div>
+      </div>
+    </section>
+    <aside class="side">
+      <section class="panel compact">
+        <h2>Office log — <span id="feed-agent">—</span></h2>
+        <p class="activity-hint">Handoffs, pass-backs, gates, and progress.</p>
+        <div class="activity-log-toolbar" role="tablist" aria-label="Activity log scope">
+          <button type="button" class="ghost activity-scope-btn" data-scope="task">This task</button>
+          <button type="button" class="ghost activity-scope-btn active" data-scope="session">Whole session</button>
+        </div>
+        <ol id="history" class="activity-feed whole-session"><li class="activity-empty">No office activity yet.</li></ol>
+        <pre id="live-output" class="log empty">Live model output appears here while someone is working.</pre>
+      </section>
+      <section class="panel compact" id="deliverable-panel" hidden>
+        <h2>Output</h2>
+        <p class="deliverable-hint">Files written for this task:</p>
+        <button type="button" class="deliverable-path" id="deliverable-path" title="Open this folder in Finder"></button>
+        <p class="deliverable-actions row">
+          <button type="button" class="ghost" id="deliverable-open-folder">Open folder</button>
+          <a class="deliverable-preview" id="deliverable-preview" href="#" target="_blank" rel="noopener" hidden>Open in browser</a>
+        </p>
+        <ul id="deliverable-files" class="file-list"></ul>
+      </section>
+    </aside>
+  </main>
+    </div>
+  </div>
+  <script src="/static/pixel-characters.js?v=4"></script>
+  <script src="/static/office-world.js?v=36"></script>
+  <script src="/static/app.js?v=50"></script>
+</body>
+</html>

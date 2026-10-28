@@ -1,0 +1,10 @@
+# Office branding — restart the UI after edits (python main.py ui).
+name: KH Office
+
+sign:
+  # Name on the top header bar (position: bottom for the entrance plaque).
+  show: true
+  hide_baked_label: true
+  position: top
+  top_percent: 3.2
+  width_percent: 48

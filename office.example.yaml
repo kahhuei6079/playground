@@ -1,0 +1,8 @@
+name: My Studio
+
+sign:
+  show: true
+  hide_baked_label: true
+  position: top
+  top_percent: 3.2
+  width_percent: 48

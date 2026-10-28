@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Monitor flash smoke — Agent Office</title>
+  <link rel="stylesheet" href="/static/pixel-office.css?v=30" />
+  <style>
+    :root {
+      --panel: #12121f;
+      --border: #2a2a40;
+      --text: #e8e8f0;
+      --muted: #9898b0;
+      --pass: #86efac;
+      --fail: #fca5a5;
+      --accent: #fbbf24;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #0d0d16;
+      color: var(--text);
+      font-family: system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem 1.25rem;
+    }
+    header h1 { margin: 0; font-size: 1rem; font-weight: 600; }
+    header p { margin: 0; font-size: 0.85rem; color: var(--muted); }
+    header a { color: #818cf8; font-size: 0.85rem; text-decoration: none; }
+    header a:hover { text-decoration: underline; }
+    .layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(260px, 300px) 1fr;
+      min-height: 0;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    aside {
+      padding: 1rem;
+      border-right: 1px solid var(--border);
+      background: var(--panel);
+      overflow-y: auto;
+    }
+    aside h2 {
+      margin: 0.75rem 0 0.5rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 0.75rem;
+    }
+    .actions button {
+      padding: 0.45rem 0.65rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #252538;
+      color: var(--text);
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .actions button.primary {
+      background: var(--accent);
+      border-color: #d97706;
+      color: #1c1917;
+      font-weight: 600;
+    }
+    .role-btn { width: 100%; text-align: left; margin-bottom: 0.35rem; }
+    #log {
+      margin: 0;
+      padding: 0.75rem;
+      border-radius: 8px;
+      background: #0a0a12;
+      border: 1px solid var(--border);
+      font-family: ui-monospace, monospace;
+      font-size: 0.68rem;
+      line-height: 1.45;
+      max-height: 220px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    .log-pass { color: var(--pass); }
+    .log-fail { color: var(--fail); }
+    #floor-wrap {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 1rem;
+      overflow: auto;
+      min-height: 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Monitor flash smoke</h1>
+    <p>Wood floor — laptop overlay flashes when an agent is <code>working</code></p>
+    <a href="/">← Agent Office</a>
+    <a href="/static/animation-smoke.html">Workflow smoke</a>
+  </header>
+  <div class="layout">
+    <aside>
+      <div class="actions">
+        <button type="button" class="primary" id="run-all">Run all desks</button>
+        <button type="button" id="reset-floor">Reset floor</button>
+      </div>
+      <h2>Per desk</h2>
+      <div id="role-buttons"></div>
+      <h2>Log</h2>
+      <pre id="log" aria-live="polite">Loading…</pre>
+    </aside>
+    <div id="floor-wrap">
+      <div class="office-floor-viewport">
+        <div class="office-scene pixel-mode cozy-pixel wood" id="office-scene">
+          <div id="pixel-floor" class="pixel-floor" data-testid="office-floor"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/static/pixel-characters.js?v=4"></script>
+  <script src="/static/office-world.js?v=34"></script>
+  <script src="/static/monitor-flash-smoke-runner.js?v=5"></script>
+  <script>
+    const logEl = document.getElementById("log");
+    const roleButtons = document.getElementById("role-buttons");
+
+    function logLine(text, ok) {
+      const span = document.createElement("span");
+      span.className = ok === true ? "log-pass" : ok === false ? "log-fail" : "";
+      span.textContent = text + "\n";
+      logEl.appendChild(span);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function setBusy(on) {
+      document.querySelectorAll("button").forEach((b) => {
+        b.disabled = on;
+      });
+    }
+
+    window.OfficeWorld.init(document.getElementById("pixel-floor"));
+    window.OfficeWorld.resetPositions?.();
+
+    MonitorFlashSmoke.roles.forEach((role) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "role-btn";
+      btn.textContent = role;
+      btn.addEventListener("click", async () => {
+        setBusy(true);
+        logLine(`— ${role} —`);
+        try {
+          const r = await MonitorFlashSmoke.testRole(role);
+          logLine(r.ok ? `PASS  ${role}` : `FAIL  ${role}  ${r.detail}`, r.ok);
+        } catch (e) {
+          logLine(`FAIL  ${role}: ${e.message}`, false);
+        } finally {
+          setBusy(false);
+        }
+      });
+      roleButtons.appendChild(btn);
+    });
+
+    document.getElementById("run-all").addEventListener("click", async () => {
+      setBusy(true);
+      logEl.textContent = "";
+      logLine("Running monitor flash on all team desks…");
+      try {
+        const { passed, total, results } = await MonitorFlashSmoke.runAll();
+        results.forEach((r) => {
+          logLine(r.ok ? `PASS  ${r.role}` : `FAIL  ${r.role}  ${r.detail}`, r.ok);
+        });
+        logLine(`Done: ${passed}/${total} passed`, passed === total);
+      } catch (e) {
+        logLine(`FAIL: ${e.message}`, false);
+      } finally {
+        setBusy(false);
+      }
+    });
+
+    document.getElementById("reset-floor").addEventListener("click", () => {
+      window.OfficeWorld.endMeeting?.();
+      window.OfficeWorld.resetPositions?.();
+      MonitorFlashSmoke.roles.forEach((id) => {
+        window.OfficeWorld.updateActor(id, { mode: "idle", tag: "idle", bubble: "" });
+      });
+    });
+
+    window.__monitorFlashReady = true;
+    logEl.textContent = "";
+    logLine(`Ready — ${MonitorFlashSmoke.roles.length} desks (wood theme).`);
+  </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# Optional global bindings. Prefer per-agent agents/<role>/SKILL.md with cursor_skills: [...].
+# Bind Cursor SKILL.md folders to Agent Office roles (PM, developer, etc.).
+#
+# Each entry is a skill folder name or path:
+#   - Folder name → ~/.cursor/skills/<name>/SKILL.md then .cursor/skills/<name>/SKILL.md
+#   - Path → absolute or ~/... to a folder containing SKILL.md
+#
+# Cursor built-ins under ~/.cursor/skills-cursor/ are NOT loaded (IDE-only).
+#
+# Example:
+#   developer:
+#     - my-deploy-checklist
+#     - /Users/you/.cursor/skills/custom-qa/SKILL.md
+
+pm: []
+architect: []
+designer: []
+developer: []
+qa: []

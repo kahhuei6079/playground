@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Animation smoke — Agent Office</title>
+  <link rel="stylesheet" href="/static/pixel-office.css?v=15" />
+  <style>
+    :root {
+      --panel: #12121f;
+      --border: #2a2a40;
+      --text: #e8e8f0;
+      --muted: #9898b0;
+      --pass: #86efac;
+      --fail: #fca5a5;
+      --accent: #818cf8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #0d0d16;
+      color: var(--text);
+      font-family: system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem 1.25rem;
+    }
+    header h1 { margin: 0; font-size: 1rem; font-weight: 600; }
+    header p { margin: 0; font-size: 0.85rem; color: var(--muted); }
+    header a { color: var(--accent); text-decoration: none; font-size: 0.85rem; }
+    header a:hover { text-decoration: underline; }
+    .layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(280px, 340px) 1fr;
+      min-height: 0;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    aside {
+      padding: 1rem;
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      background: var(--panel);
+      max-height: calc(100vh - 52px);
+    }
+    aside h2 {
+      margin: 1rem 0 0.5rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    aside h2:first-child { margin-top: 0; }
+    .scenario {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin-bottom: 0.4rem;
+      padding: 0.55rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #1a1a2e;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    .scenario:hover:not(:disabled) { border-color: var(--accent); }
+    .scenario:disabled { opacity: 0.5; cursor: wait; }
+    .scenario small {
+      display: block;
+      margin-top: 0.2rem;
+      color: var(--muted);
+      font-size: 0.68rem;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin: 0.75rem 0 1rem;
+      position: sticky;
+      top: 0;
+      background: var(--panel);
+      padding-bottom: 0.5rem;
+      z-index: 1;
+    }
+    .actions button {
+      padding: 0.45rem 0.65rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #252538;
+      color: var(--text);
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .actions button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0d0d16;
+      font-weight: 600;
+    }
+    .actions button.play {
+      background: #1e3a2f;
+      border-color: #3d8b6a;
+      color: #bbf7d0;
+    }
+    .actions button:disabled { opacity: 0.5; cursor: wait; }
+    #log {
+      margin: 0;
+      padding: 0.75rem;
+      border-radius: 8px;
+      background: #0a0a12;
+      border: 1px solid var(--border);
+      font-family: ui-monospace, monospace;
+      font-size: 0.68rem;
+      line-height: 1.4;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    .log-pass { color: var(--pass); }
+    .log-fail { color: var(--fail); }
+    #floor-wrap {
+      position: relative;
+      min-height: 420px;
+      height: 100%;
+    }
+    #pixel-floor {
+      width: 100%;
+      height: 100%;
+      min-height: 420px;
+      position: absolute;
+      inset: 0;
+    }
+    #scenario-list { margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Workflow animation smoke</h1>
+    <p>All parcel walks + meeting gates from <code>workflow-handoffs.json</code></p>
+    <a href="/">← Agent Office</a>
+  </header>
+  <div class="layout">
+    <aside>
+      <div class="actions">
+        <button type="button" class="play" id="playthrough">Play workflow</button>
+        <button type="button" class="primary" id="run-all">Run all tests</button>
+        <button type="button" id="end-meeting">End meeting</button>
+        <button type="button" id="reset-floor">Reset floor</button>
+      </div>
+      <div id="scenario-list" aria-label="Scenarios by phase"></div>
+      <h2>Log</h2>
+      <pre id="log" aria-live="polite">Loading manifest…</pre>
+    </aside>
+    <div id="floor-wrap">
+      <div id="pixel-floor" class="pixel-floor" data-testid="office-floor"></div>
+    </div>
+  </div>
+  <script>
+    window.renderRoleSprite = () => "<span class='sprite-stub'></span>";
+  </script>
+  <script src="/static/office-world.js?v=25"></script>
+  <script src="/static/animation-smoke-runner.js?v=2"></script>
+  <script>
+    const logEl = document.getElementById("log");
+    const scenarioListEl = document.getElementById("scenario-list");
+    let controls = null;
+
+    function setBusy(on) {
+      document.querySelectorAll(".scenario, #run-all, #playthrough").forEach((b) => {
+        b.disabled = on;
+      });
+    }
+
+    window.OfficeWorld.init(document.getElementById("pixel-floor"));
+
+    AnimationSmokeRunner.init({
+      logEl,
+      scenarioListEl,
+      onBusy: setBusy,
+    })
+      .then((c) => {
+        controls = c;
+        window.__smokeReady = true;
+        logEl.textContent = "";
+        const m = window.WORKFLOW_HANDOFF_MANIFEST;
+        const span = document.createElement("span");
+        span.textContent =
+          `Ready — ${m.parcel.length} parcel routes, ${m.meetings.length} meetings. Use Play workflow for in-order tour.\n`;
+        logEl.appendChild(span);
+      })
+      .catch((e) => {
+        logEl.textContent = `Failed to load: ${e.message}`;
+      });
+
+    document.getElementById("run-all").addEventListener("click", () => controls?.runAll());
+    document.getElementById("playthrough").addEventListener("click", () => controls?.playthrough());
+    document.getElementById("end-meeting").addEventListener("click", () => {
+      window.OfficeWorld.endMeeting?.();
+    });
+    document.getElementById("reset-floor").addEventListener("click", () => {
+      window.OfficeWorld.endMeeting?.();
+      window.OfficeWorld.resetPositions?.();
+    });
+  </script>
+</body>
+</html>

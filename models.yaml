@@ -1,0 +1,23 @@
+# Per-agent model routing. All agents inherit `default` unless overridden under `agents`.
+#
+# provider: ollama | openai
+#   ollama — local Ollama (default base_url http://localhost:11434)
+#   openai — any OpenAI-compatible HTTP API (OpenAI, Groq, Together, local vLLM, etc.)
+#
+# api_key_env — name of an environment variable holding the API key (never put secrets in this file)
+
+default:
+  provider: ollama
+  model: qwen3.5:9b
+  base_url: http://localhost:11434
+  temperature: 0.2
+
+agents:
+  pm:
+    provider: ollama
+    model: gemma4:latest
+    temperature: 0.15
+  architect: {}
+  designer: {}
+  developer: {}
+  qa: {}

@@ -1,0 +1,18 @@
+---
+description: Restart Agent Office UI server after editing Python backend code
+globs: "**/*.py"
+alwaysApply: false
+---
+
+# Restart server after Python changes
+
+When you modify Python code for Agent Office (`graph.py`, `server.py`, `runtime.py`, `agents.py`, etc.), **restart the UI server in the same turn** — do not only tell the user to restart.
+
+```bash
+lsof -ti :8000 | xargs kill -9 2>/dev/null; sleep 1
+cd /Users/kahhuei/playground && source .venv/bin/activate && python main.py ui --no-browser
+```
+
+Run the server in the background (`block_until_ms: 0`). Confirm port 8000 responds if practical.
+
+Static-only changes (`static/*`) need a hard refresh, not a server restart.
